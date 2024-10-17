@@ -55,46 +55,28 @@ fn maclaurin_foward(x: f64) -> f64 {
 }
 
 
-fn basel_sum_foward() -> f64 {
+fn basel_sum_foward(n: i32) -> f64 {
     let mut sum = 0.0;
-    let mut k = 1;
-    let mut previous_sum = 0.0;
-    let epsilon = 1e-15;
     
-    loop {
+    for k in 1..=n {
         let number = 1.0 / (k as f64).powi(2);
         sum += number;
-
-        if (sum - previous_sum).abs() < epsilon {
-            return sum;
-        }
-
-        previous_sum = sum;
-        k += 1;
     }
+    return sum;
 }
 
-fn basel_sum_kahal() -> f64 {
+fn basel_sum_kahal(n: i32) -> f64 {
     let mut sum = 0.0;
     let mut compensation = 0.0;
-    let mut k = 1;
-    let mut previous_sum = 0.0;
-    let epsilon = 1e-15;
 
-    loop {
+    for k in 1..=n {
         let number = 1.0 / (k as f64).powi(2);
         let y = number - compensation;
         let t = sum + y;
         compensation = (t - sum) - y;
         sum = t;
-
-        if (sum - previous_sum).abs() < epsilon {
-            return sum;
-        }
-
-        previous_sum = sum;
-        k += 1;
     }
+    return sum;
 }
 
 fn task_1() {
@@ -120,13 +102,19 @@ fn task_2() {
 }
 
 fn task_3() {
+    let n = 94906266;
     let expected = (PI*PI)/6.0;
-    let sum_kahal = basel_sum_kahal();
-    let basic_sum = basel_sum_foward();
-    println!("Basic sum {:e}", basic_sum);
-    calc_rel_error(expected, basic_sum);
-    println!("Kahal sum: {:e}", sum_kahal);
-    calc_rel_error(expected, sum_kahal);
+    for i in [1,2,4,8] {
+        println!("Forward sum for {}n: ", i);
+        let sum = basel_sum_foward(n*i);
+        println!("Sum: {:e}", sum);
+        calc_rel_error(expected, sum);
+
+        println!("Kahan sum for {}n: ", i);
+        let sum = basel_sum_kahal(n*i);
+        println!("Sum: {:e}", sum);
+        calc_rel_error(expected, sum);
+    }
 }
 
 fn main() {
