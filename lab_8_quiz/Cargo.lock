@@ -262,7 +262,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "lab_8"
+name = "lab_8_quiz"
 version = "0.1.0"
 dependencies = [
  "plotly",
