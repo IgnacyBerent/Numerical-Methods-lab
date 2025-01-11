@@ -27,7 +27,7 @@ initial_conditions = [
     {
         "name": "Euler's solution",
         "m1": 1.0,
-        "m2": 4.0,
+        "m2": 1.0,
         "m3": 1.0,
         "x1": -1,
         "y1": 0,
@@ -36,11 +36,11 @@ initial_conditions = [
         "x2": 0,
         "y2": 0,
         "vx2": 0,
-        "vy2": -0.6,
+        "vy2": 0,
         "x3": 1,
         "y3": 0,
         "vx3": 0,
-        "vy3": 0.3,
+        "vy3": -0.3,
     },
     {
         "name": "Lagrange Equilateral Triangle solution",
@@ -103,7 +103,7 @@ def system(t, y, m1, m2, m3):
 
 
 if __name__ == "__main__":
-    for ic in initial_conditions:
+    for ic in initial_conditions[1:2]:
         y0 = [
             ic["x1"],
             ic["y1"],
@@ -121,10 +121,19 @@ if __name__ == "__main__":
 
         m1, m2, m3 = ic["m1"], ic["m2"], ic["m3"]
 
-        t_end = 10
-        t_span = [0, 10]
-        t_eval = np.linspace(0, t_end, 100)
-        solution = solve_ivp(system, t_span, y0, t_eval=t_eval, args=(m1, m2, m3))
+        t_end = 20
+        t_span = [0, t_end]
+        t_eval = np.linspace(0, t_end, t_end * 10)
+        solution = solve_ivp(
+            system,
+            t_span,
+            y0,
+            t_eval=t_eval,
+            args=(m1, m2, m3),
+            method="RK45",
+            rtol=1e-6,
+            atol=1e-6,
+        )
         trajectory_1 = np.array([solution.y[0], solution.y[1]]).T
         trajectory_2 = np.array([solution.y[2], solution.y[3]]).T
         trajectory_3 = np.array([solution.y[4], solution.y[5]]).T
